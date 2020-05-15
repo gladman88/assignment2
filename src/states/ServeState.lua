@@ -32,6 +32,7 @@ function ServeState:enter(params)
 end
 
 function ServeState:update(dt)
+	self.paddle:resetSize(2)
     -- have the ball track the player
     self.paddle:update(dt)
     self.ball.x = self.paddle.x + (self.paddle.width / 2) - 4
