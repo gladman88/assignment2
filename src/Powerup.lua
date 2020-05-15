@@ -31,6 +31,8 @@ function Powerup:init(skin)
     self.dx = 0
     
     self.skin = skin
+    -- kinds of powerups: ball, key
+    self.kind = 'ball' 
     
     -- we will show it only if we got some amounts of hits
     self.show = false
@@ -42,13 +44,12 @@ function Powerup:reset()
 
     -- y is placed randomly between 
     self.y = VIRTUAL_HEIGHT / 2 + math.random(40)
-
-    -- this will effectively be the color of our ball, and we will index
-    -- our table of Quads relating to the global block texture using this
-    self.skin = math.random(10)
     
     -- hide it
     self.show = false
+    
+    self.skin = math.random(9)
+    self.kind = 'ball' 
 end
 
 --[[

@@ -55,7 +55,9 @@ end
     we have to return a subset of GenerateQuads.
 ]]
 function GenerateQuadsBricks(atlas)
-    return table.slice(GenerateQuads(atlas, 32, 16), 1, 21)
+	sheet = table.slice(GenerateQuads(atlas, 32, 16), 1, 21)
+	sheet[22] = love.graphics.newQuad(5 * 32, 3 * 16, 32, 16, atlas:getDimensions())
+    return sheet
 end
 
 --[[

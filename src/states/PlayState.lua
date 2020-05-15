@@ -42,7 +42,16 @@ function PlayState:enter(params)
     
     self.hitCounter = 0
     self.showPowerup = false
-    self.powerup = Powerup(9)
+    self.powerup = Powerup(math.random(9))
+    
+    self.isKeyBrickExist = false
+    -- check if key block is on the Map
+    for k, brick in pairs(self.bricks) do
+        if brick.isLocked then
+        	self.isKeyBrickExist = true
+        end
+    end
+    
 end
 
 function PlayState:update(dt)
@@ -226,34 +235,50 @@ function PlayState:update(dt)
     -- powerups
     if self.hitCounter > 10 and not self.powerup.show then
     	self.powerup.show = true
-    	--self.powerup.skin = math.random(10) == 10 and 10 or 9
     	self.hitCounter = 0
+    	
+    	-- if KeyBrick is exist (not false) we will have 25% chance to spawn Key Powerup
+    	if self.isKeyBrickExist then
+    		if math.random(4) == 1 then
+    			self.powerup.skin = 10
+    			self.powerup.kind = 'key'
+    		end
+    	end
     end
     
     if self.powerup.show then
     	self.powerup:update(dt)
     	
     	if self.powerup:collides(self.paddle) then
-    		-- create additional balls
-    		additionalBall1 = Ball(math.random(7))
-    		additionalBall2 = Ball(math.random(7))
+    		if self.powerup.kind == 'ball' then
+	    		-- create additional balls
+    			additionalBall1 = Ball(math.random(7))
+    			additionalBall2 = Ball(math.random(7))
     		
-    		additionalBall1.x = self.paddle.x + (self.paddle.width / 3) - 4
-    		additionalBall1.y = self.paddle.y - 8
-    		additionalBall1.dx = math.random(-200, 200)
-    		additionalBall1.dy = math.random(-50, -60)
+	    		additionalBall1.x = self.paddle.x + (self.paddle.width / 3) - 4
+    			additionalBall1.y = self.paddle.y - 8
+    			additionalBall1.dx = math.random(-200, 200)
+    			additionalBall1.dy = math.random(-50, -60)
     		
-    		additionalBall2.x = self.paddle.x + (self.paddle.width / 3 * 2) - 4
-    		additionalBall2.y = self.paddle.y - 8
-    		additionalBall2.dx = math.random(-200, 200)
-    		additionalBall2.dy = math.random(-50, -60)
+	    		additionalBall2.x = self.paddle.x + (self.paddle.width / 3 * 2) - 4
+    			additionalBall2.y = self.paddle.y - 8
+    			additionalBall2.dx = math.random(-200, 200)
+    			additionalBall2.dy = math.random(-50, -60)
     		
-    		table.insert(self.balls, additionalBall1)
-    		table.insert(self.balls, additionalBall2)
+	    		table.insert(self.balls, additionalBall1)
+    			table.insert(self.balls, additionalBall2)
+		    elseif self.powerup.kind == 'key' then
+		    	self.isKeyBrickExist = false
+		    	for k, brick in pairs(self.bricks) do
+        			if brick.isLocked then
+        				brick.isLocked = false
+        			end
+    			end
+		    end
     		
 			self.powerup:reset()
         	gSounds['paddle-hit']:play()
-	    end
+		end    
     
     	if self.powerup.y >= VIRTUAL_HEIGHT then
     		self.powerup:reset()

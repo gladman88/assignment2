@@ -118,11 +118,27 @@ function LevelMaker.createMap(level)
             ::continue::
         end
     end 
-
+	
+	
     -- in the event we didn't generate any bricks, try again
-    if #bricks == 0 then
+    if #bricks == 0 then    	
         return self.createMap(level)
     else
+		indexForKeyBlock = 0
+		-- in 33% of Maps we will create Key Block randomly, among all existing blocks
+    	if math.random(3) == 3 then
+    		indexForKeyBlock = math.random(#bricks)
+    		counter = 1
+ 			for k, brick in pairs(bricks) do 
+				if counter == indexForKeyBlock then
+    				brick.color = 6
+    				brick.tier = 0
+    				brick.isLocked = true
+    			end
+    			counter = counter + 1
+    		end
+    	end
+    	
         return bricks
     end
 end
