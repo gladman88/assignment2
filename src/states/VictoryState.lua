@@ -24,6 +24,7 @@ function VictoryState:enter(params)
 end
 
 function VictoryState:update(dt)
+	self.paddle:resetSize(2)
     self.paddle:update(dt)
 
     -- have the ball track the player

@@ -40,6 +40,7 @@ function PlayState:enter(params)
     	self.recoverPoints = 5000
     end
     
+    
     self.hitCounter = 0
     self.showPowerup = false
     self.powerup = Powerup(math.random(9))
@@ -115,7 +116,7 @@ function PlayState:update(dt)
 	            	    self.health = math.min(3, self.health + 1)
 	
 		                -- multiply recover points by 2
-		                self.recoverPoints = math.min(100000, self.recoverPoints * 2)
+		                self.recoverPoints = self.score + math.min(100000, self.recoverPoints * 2)
 	
 	    	            -- play recover sound effect
 	        	        gSounds['recover']:play()
