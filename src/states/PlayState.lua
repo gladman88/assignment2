@@ -100,30 +100,36 @@ function PlayState:update(dt)
 	
 	        -- only check collision if we're in play
 	        if brick.inPlay and ball:collides(brick) then
+				if not brick.isLocked then
+		            -- add to score
+		            self.score = self.score + (brick.tier * 200 + brick.color * 25)
+	            
+	    	        -- bonus score for unlocked destroyed Key Brick
+	        	    if brick.color == 6 then
+	            		self.score = self.score + 10000
+		            end
 	
-	            -- add to score
-	            self.score = self.score + (brick.tier * 200 + brick.color * 25)
+		            -- if we have enough points, recover a point of health
+	    	        if self.score > self.recoverPoints then
+	        	        -- can't go above 3 health
+	            	    self.health = math.min(3, self.health + 1)
 	
+		                -- multiply recover points by 2
+		                self.recoverPoints = math.min(100000, self.recoverPoints * 2)
+	
+	    	            -- play recover sound effect
+	        	        gSounds['recover']:play()
+	                
+	            	    -- increase paddle size
+	                	if self.paddle.size < 4 then
+	                		self.paddle:resetSize(self.paddle.size + 1)
+		                end
+		            end
+				end
+				
 	            -- trigger the brick's hit function, which removes it from play
 	            brick:hit()
 	            self.hitCounter = self.hitCounter + 1
-	
-	            -- if we have enough points, recover a point of health
-	            if self.score > self.recoverPoints then
-	                -- can't go above 3 health
-	                self.health = math.min(3, self.health + 1)
-	
-	                -- multiply recover points by 2
-	                self.recoverPoints = math.min(100000, self.recoverPoints * 2)
-	
-	                -- play recover sound effect
-	                gSounds['recover']:play()
-	                
-	                -- increase paddle size
-	                if self.paddle.size < 4 then
-	                	self.paddle:resetSize(self.paddle.size + 1)
-	                end
-	            end
 
 	            -- go to our victory screen if there are no more bricks left
 	            if self:checkVictory() then
